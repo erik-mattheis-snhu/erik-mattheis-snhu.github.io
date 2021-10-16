@@ -41,7 +41,71 @@ bool handleServerInput() {
 }
 ```
 
-Originally, the artifact only had the ability to send current state to the server which it did once per second. After my enhancements, the artifact can now respond to a server request for an immediate update as well as a request to set the desired temperature directly. This enabled the use of the browser-based interface which I developed for the algorithms and data structure enhancement. While implementing this functionality, I recognized the potential for misuse and added a feature for locking the thermostat to disallow setting the temperature remotely. Another major enhancement I made was to coalesce the logic into a single timing interval. The CS-350 final was designed to show the ability to use a single timer to drive several processes occurring on different intervals. For the thermostat implementation, it is more efficient to use a common interval for the main run loop, saving memory and reducing code complexity. I made several smaller enhancements, including storing temperatures as floating-point values for greater precision and enforcing minimum and maximum temperature settings. After implementing the enhancements, I made sure the code was well-documented as easy to follow.
+I also [updated the format used to send data to the server](https://github.com/erik-mattheis-snhu/thermostat/blob/88bf2a56a947a88020134fe16791fd3a93d98f98/thermostat.c#L271-L286), making it simpler to parse and to support floating-point values.
+
+```C
+/*
+ * write the current state to the server in the following format:
+ *
+ *   D:20.000000,A:25.187500,H:0,L:0
+ *
+ * where the fields are as follows:
+ *
+ *   D: desired temperature (degrees C)
+ *   A: ambient temperature (degrees C)
+ *   H: heater state (0 = off, 1 = on)
+ *   L: remote lock (0 = off, 1 = on)
+ */
+void sendStateToServer() {
+    int len = snprintf(serverOutput, 64, "D:%f,A:%f,H:%d,L:%d\n", desiredTemperature, ambientTemperature, heaterState, preventRemoteSet);
+    UART_write(uart, &serverOutput, len);
+}
+```
+
+After my enhancements, the thermostat can respond to a server request for an immediate update as well as a request to set the desired temperature directly. This enabled the use of the browser-based interface which I developed for the algorithms and data structure enhancement. While implementing this functionality, I recognized the potential for misuse and added a feature for locking the thermostat to disallow setting the temperature remotely. Another major enhancement I made was to [coalesce the logic into a single timing interval](https://github.com/erik-mattheis-snhu/thermostat/blob/88bf2a56a947a88020134fe16791fd3a93d98f98/thermostat.c#L367-L403).
+
+```C
+while(1) { // loop forever
+    while (!timerFlag); // wait for timer flag to be raised
+    bool stateChanged = false;
+    if (serverInputFlag) {                   // if server input flag was raised
+        stateChanged |= handleServerInput(); // handle input and set state change indicator accordingly
+        serverInputFlag = false;             // lower flag
+        readFromServer();                    // request next line from server
+    }
+    if (downButtonFlag && upButtonFlag) {      // if both down and up button flags were raised
+        preventRemoteSet = !preventRemoteSet;  // toggle remote temperature lock
+        downButtonFlag = upButtonFlag = false; // lower both flags
+        stateChanged = true;
+    } else if (downButtonFlag) {                      // if down button flag was raised
+        stateChanged |= decreaseDesiredTemperature(); // decrease desired temperature and set state change indicator accordingly
+        downButtonFlag = false;                       // lower flag
+
+
+    } else if (upButtonFlag) {                        // if up button flag was raised
+        stateChanged |= increaseDesiredTemperature(); // increase desired temperature and set state change indicator accordingly
+        upButtonFlag = false;                         // lower flag
+    }
+    if (temperatureFlag) {                                                  // if temperature flag was raised
+        ambientTemperature = temperatureReading * TEMP_SENSOR_RESOLUTION_C; // multiply temperature reading by sensor resolution to set ambient temperature
+        temperatureFlag = false;                                            // lower flag
+        firstTempReceived = true;
+        stateChanged = true;
+    }
+    if (ambientTemperature < desiredTemperature) {        // if ambient temperature is less than desired temperature
+        stateChanged |= setHeaterState(HEATER_ON);        // make sure heater is on and set state change indicator accordingly
+    } else if (ambientTemperature > desiredTemperature) { // if ambient temperature is greater than desired temperature
+        stateChanged |= setHeaterState(HEATER_OFF);       // make sure heater is off and set state change indicator accordingly
+    }
+    if (firstTempReceived && stateChanged) { // if a temperature reading has been made and state has changed
+        sendStateToServer();                 // send state to server
+    }
+    requestTemperature(); // request a temperature reading
+    timerFlag = false;    // lower the flag and execute the loop again
+}
+```
+
+The CS-350 final was designed to show the ability to use a single timer to drive several processes occurring on different intervals. For the thermostat implementation, it is more efficient to use a common interval for the main run loop, saving memory and reducing code complexity. I made several smaller enhancements, including storing temperatures as floating-point values for greater precision and enforcing minimum and maximum temperature settings. After implementing the enhancements, I made sure the code was well-documented as easy to follow.
 
 The complete source code for this enhancment is [available here](https://github.com/erik-mattheis-snhu/thermostat).
 
