@@ -16,4 +16,6 @@ The first step to building the complete system was a [comprehensive code review]
 This project pulls together many skills that I have learned throughout my career as well as in this program. It demonstrates proficiency in several programming environments from embedded microcontroller devices to common server platforms and web browsers. It also shows my ability to design a cohesive system and implement it using several different programming languages. These skills are valuable in my current job, and I believe they will remain in demand for the foreseeable future.
 
 <hr />
+<p align="center">
 <span style="font-size: 80%; float: right; padding-bottom: 1em;">Continue to <a href="./code-review">Code Review</a> »</span>
+</p>
