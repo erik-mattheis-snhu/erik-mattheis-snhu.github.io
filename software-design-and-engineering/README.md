@@ -8,3 +8,9 @@ As I worked through the enhancement process, I learned more about the embedded d
 The principal improvement I made to the artifact was to introduce the ability to receive commands from the server interface. Originally, the artifact only had the ability to send current state to the server which it did once per second. After my enhancements, the artifact can now respond to a server request for an immediate update as well as a request to set the desired temperature directly. This enabled the use of the browser-based interface which I developed for the algorithms and data structure enhancement. While implementing this functionality, I recognized the potential for misuse and added a feature for locking the thermostat to disallow setting the temperature remotely. Another major enhancement I made was to coalesce the logic into a single timing interval. The CS-350 final was designed to show the ability to use a single timer to drive several processes occurring on different intervals. For the thermostat implementation, it is more efficient to use a common interval for the main run loop, saving memory and reducing code complexity. I made several smaller enhancements, including storing temperatures as floating-point values for greater precision and enforcing minimum and maximum temperature settings. After implementing the enhancements, I made sure the code was well-documented as easy to follow.
 
 The complete source code for this enhancment is [available here](https://github.com/erik-mattheis-snhu/thermostat).
+
+<hr />
+<p align="center">
+<span style="font-size: 80%; float: left; padding-bottom: 1em;">« <a href="../code-review">Code Review</a> &nbsp;</span>
+<span style="font-size: 80%; float: right; padding-bottom: 1em;">&nbsp; <a href="../algorithms-and-data-structure">Algorithms and Data Structure</a> »</span>
+</p>
