@@ -17,5 +17,5 @@ This project pulls together many skills that I have learned throughout my career
 
 <hr />
 <p align="center">
-<span style="font-size: 80%; float: right; padding-bottom: 1em;">Continue to <a href="./code-review">Code Review</a> »</span>
+<span style="font-size: 80%; float: right; padding-bottom: 1em;">&nbsp;  <a href="./code-review">Code Review</a> »</span>
 </p>
