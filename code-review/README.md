@@ -8,7 +8,6 @@ The source code under review is [available here](https://gist.github.com/erik-ma
 
 <hr />
 <p align="center">
-<span style="font-size: 80%; float: left; padding-bottom: 1em;">« <a href="../">Professional Self-Assessment</a></span>
-|
-<span style="font-size: 80%; float: right; padding-bottom: 1em;"><a href="../software-design-and-engineering">Software Design and Engineering</a> »</span>
+<span style="font-size: 80%; float: left; padding-bottom: 1em;">« <a href="../">Professional Self-Assessment</a> &nbsp;</span>
+<span style="font-size: 80%; float: right; padding-bottom: 1em;">&nbsp; <a href="../software-design-and-engineering">Software Design and Engineering</a> »</span>
 </p>
