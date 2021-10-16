@@ -107,7 +107,7 @@ while(1) { // loop forever
 
 The CS-350 final was designed to show the ability to use a single timer to drive several processes occurring on different intervals. For the thermostat implementation, it is more efficient to use a common interval for the main run loop, saving memory and reducing code complexity. I made several smaller enhancements, including storing temperatures as floating-point values for greater precision and enforcing minimum and maximum temperature settings. After implementing the enhancements, I made sure the code was well-documented as easy to follow.
 
-The complete source code for this enhancment is [available here](https://github.com/erik-mattheis-snhu/thermostat).
+The complete source code for this enhancment is [available here](https://github.com/erik-mattheis-snhu/thermostat-server).
 
 <hr />
 <p align="center">
