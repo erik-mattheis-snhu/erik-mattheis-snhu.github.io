@@ -5,7 +5,44 @@ I decided to include this artifact in my portfolio because it represents technol
 
 As I worked through the enhancement process, I learned more about the embedded development board used for the CS-350 project. By approaching the project with enhancement in mind (instead of just meeting the requirements of the CS-350 final project) I discovered a lot of room for improvement. My main challenge was budgeting my time and sticking to the original plan as new ideas occurred to me throughout the process. I started with a basic reorganization and reformatting of the code to make it more consistent and easier to manage. A significant part of the original project came from a project template, so I took the time to replace that code with my own and remove a lot of unnecessary functionality used for debugging, resulting in more efficient and stable execution.
 
-The principal improvement I made to the artifact was to introduce the ability to receive commands from the server interface. Originally, the artifact only had the ability to send current state to the server which it did once per second. After my enhancements, the artifact can now respond to a server request for an immediate update as well as a request to set the desired temperature directly. This enabled the use of the browser-based interface which I developed for the algorithms and data structure enhancement. While implementing this functionality, I recognized the potential for misuse and added a feature for locking the thermostat to disallow setting the temperature remotely. Another major enhancement I made was to coalesce the logic into a single timing interval. The CS-350 final was designed to show the ability to use a single timer to drive several processes occurring on different intervals. For the thermostat implementation, it is more efficient to use a common interval for the main run loop, saving memory and reducing code complexity. I made several smaller enhancements, including storing temperatures as floating-point values for greater precision and enforcing minimum and maximum temperature settings. After implementing the enhancements, I made sure the code was well-documented as easy to follow.
+The principal improvement I made to the artifact was to introduce the ability to receive commands from the server interface.
+
+```C
+/*
+ * parse the server input buffer for supported actions
+ *
+ * supported actions include a single 'U' character indicating an update request
+ * or a command to set the desired temperature in the form:
+ *
+ *   D:25.000000
+ *
+ * return true if state should be sent to the server
+ */
+bool handleServerInput() {
+    size_t len = strlen(serverInput);
+
+
+    if (len > 0) {
+        switch (serverInput[0]) {
+            case 'U': // update request
+                return true;
+            case 'D': // set desired temperature
+                if (len > 2 && serverInput[1] == ':' && !preventRemoteSet) { // ensure buffer is long enough and remote set is not disallowed
+                    float temperature;
+                    if (sscanf(&serverInput[2], "%f", &temperature)) { // if a float was successfully parse
+                        return setDesiredTemperature(temperature);     // set the desired temperature
+                    }
+                }
+        }
+    }
+
+
+    return false;
+}
+```
+[link to source](https://github.com/erik-mattheis-snhu/thermostat/blob/88bf2a56a947a88020134fe16791fd3a93d98f98/thermostat.c#L288-L316)
+
+Originally, the artifact only had the ability to send current state to the server which it did once per second. After my enhancements, the artifact can now respond to a server request for an immediate update as well as a request to set the desired temperature directly. This enabled the use of the browser-based interface which I developed for the algorithms and data structure enhancement. While implementing this functionality, I recognized the potential for misuse and added a feature for locking the thermostat to disallow setting the temperature remotely. Another major enhancement I made was to coalesce the logic into a single timing interval. The CS-350 final was designed to show the ability to use a single timer to drive several processes occurring on different intervals. For the thermostat implementation, it is more efficient to use a common interval for the main run loop, saving memory and reducing code complexity. I made several smaller enhancements, including storing temperatures as floating-point values for greater precision and enforcing minimum and maximum temperature settings. After implementing the enhancements, I made sure the code was well-documented as easy to follow.
 
 The complete source code for this enhancment is [available here](https://github.com/erik-mattheis-snhu/thermostat).
 
